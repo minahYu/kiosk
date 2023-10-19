@@ -1,5 +1,4 @@
-import java.util.Arrays;
-import java.util.List;
+package kiosk;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,13 +7,6 @@ public class Main {
         while(true) {
             PrintMenu.printMainMenu();
             menu.selectMainMenu();
-            //System.out.println("$$$");
-            break;
         }
-
-
-        /*List<Menu> shakeshackMenu = Arrays.asList(
-
-        );*/
     }
 }
