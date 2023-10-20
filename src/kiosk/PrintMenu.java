@@ -7,45 +7,24 @@ import java.util.stream.Stream;
 public class PrintMenu {
     static int waitingNumber = 1; // 대기번호
     public static void printCommon() { // 메뉴 출력시 공통적으로 출력되는 부분
-        System.out.println("\"SHAKESHACK BURGER 에 오신걸 환영합니다.\"");
+        System.out.println("\"MOM'S TOUCH BURGER 에 오신걸 환영합니다.\"");
         System.out.println("아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\n");
     }
-    public static void printMainMenu() { // 메인메뉴 선택
-        String[] menuName = new String[]{"Shakeshack", "Order"};
-        printCommon();
-
-        // shakeshack , order 메뉴가 category 부분 제외하고는 모두 중복되고 있어 이 부분 수정하고 싶음.
-        // Shakeshack menu
-        System.out.println("[ SHAKESHACK MENU ]");
-        Order.mainMenuList.stream().filter(mainMenu -> mainMenu.getCategory().equals(menuName[0]))
-                .forEach(mainMenu -> System.out.println(mainMenu.getNumber() + ". "
-                        + mainMenu.getName() + " | " + mainMenu.getExplanation()));
-        System.out.println();
-
-
-        // Order menu
-        System.out.println("[ ORDER MENU ]");
-        Order.mainMenuList.stream().filter(mainMenu -> mainMenu.getCategory().equals(menuName[1]))
+    public static void printCategoryMenu(String menuName) { // 카테고리 메뉴 선택
+        System.out.println("[ " + menuName.toUpperCase() + " MENU ]");
+        Order.mainMenuList.stream().filter(mainMenu -> mainMenu.getCategory().equals(menuName))
                 .forEach(mainMenu -> System.out.println(mainMenu.getNumber() + ". "
                         + mainMenu.getName() + " | " + mainMenu.getExplanation()));
         System.out.println();
     }
 
-    public static void printSelectedBurgers() { // 버거 선택
+    public static void printSelectedFoodMenu(List<Products> productsList) { // 메인메뉴에서 선택된 음식관련 메뉴 출력
         printCommon();
 
-        System.out.println("[ Burgers MENU ]"); // 카테고리에서 가져오기
-        Order.burgerList.stream().forEach(burger ->
-                System.out.println(burger.getNumber() + ". " + burger.getName()
-                        + " | W " + burger.getPrice() + " | " + burger.getExplanation()));
-    }
-    
-    public static void printSelectedDrinks() { // 음료 선택
-        System.out.println("[ Drinks MENU ]");
-
-        Order.drinkList.stream().forEach(drink ->
-                System.out.println(drink.getNumber() + ". " + drink.getName()
-                        + " | W " + drink.getPrice() + " | " + drink.getExplanation()));
+        System.out.println("[ " + productsList.get(0).getCategory().toUpperCase() + " MENU ]");
+        productsList.stream().forEach(menuList ->  System.out.println(menuList.getNumber() + ". " + menuList.getName()
+                + " | W " + menuList.getPrice() + " | " + menuList.getExplanation()));
+        System.out.println();
     }
 
     public static void printCartCheck(int menuNumber, List<Products> productsList) { // 장바구니에 추가할지 물어보는 질문 출력
@@ -59,7 +38,7 @@ public class PrintMenu {
             System.out.println("위 메뉴를 장바구니에 추가하시겠습니까?");
             System.out.println("1. 확인        2. 취소");
 
-            menu.selectAddCart(product.getName());
+            menu.selectAddCart(product.getName(), productsList);
         });
     }
 
@@ -79,13 +58,13 @@ public class PrintMenu {
         menu.selectOrderOrMenu();
     }
 
-    public static void completeOrder() { // 주문완료 화면
+    public static void printCompleteOrder() { // 주문완료 화면
         int timeCount = 3;
 
         System.out.println("주문이 완료되었습니다!\n");
         System.out.println("대기번호는 [ " + waitingNumber + " ] 번 입니다.");
         waitingNumber++; // 다음 대기번호는 +1
-        System.out.println("(" + timeCount + "초후 메뉴판으로 돌아갑니다.)");
+        System.out.println("(" + timeCount + "초후 메뉴판으로 돌아갑니다.)\n");
     }
 
     public static void printOrderCancel() { // 주문 취소 화면

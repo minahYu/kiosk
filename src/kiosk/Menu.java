@@ -55,14 +55,20 @@ public class Menu {
 
         switch (mainMenuNumber) {
             case 1:
-                selectBurgersMenu();
+                PrintMenu.printSelectedFoodMenu(Order.burgerList);
+                selectProductMenu(Order.burgerList);
                 break;
             case 2:
+                PrintMenu.printSelectedFoodMenu(Order.chickenList);
+                selectProductMenu(Order.chickenList);
                 break;
             case 3:
-                selectDrinksMenu();
+                PrintMenu.printSelectedFoodMenu(Order.drinkList);
+                selectProductMenu(Order.drinkList);
                 break;
             case 4:
+                PrintMenu.printSelectedFoodMenu(Order.sideList);
+                selectProductMenu(Order.sideList);
                 break;
             case 5: // 장바구니 리스트 화면
                 printMenu.printCartList();
@@ -73,52 +79,19 @@ public class Menu {
         }
     }
 
-    public void selectBurgersMenu() { // 버거메뉴 선택
-        PrintMenu.printSelectedBurgers(); // 메뉴 보여주기
-        int burgerNumber = sc.nextInt(); // 입력받기
+    public void selectProductMenu(List<Products> productsList) { // 메뉴 선택 (음식)
+        int foodNumber = sc.nextInt(); // 입력받기
 
-        switch(burgerNumber) {
-            case 1:
-                PrintMenu.printCartCheck(burgerNumber, Order.burgerList);
-                System.out.println();
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }
+        PrintMenu.printCartCheck(foodNumber, productsList);
+        System.out.println();
     }
 
-    public void selectDrinksMenu() { // 음료메뉴 선택
-        PrintMenu.printSelectedDrinks(); // 메뉴 보여주기
-        int drinkNumber = sc.nextInt(); // 입력받기
-
-        switch(drinkNumber) {
-            case 1:
-                PrintMenu.printCartCheck(drinkNumber, Order.drinkList);
-                System.out.println();
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }
-    }
-
-    public void selectAddCart(String menuName) { // 장바구니에 담을지 선택
+    public void selectAddCart(String menuName, List<Products> productsList) { // 장바구니에 담을지 선택
         int addCartNumber = sc.nextInt();
         switch(addCartNumber) {
             case 1:
-                Order.burgerList.stream().filter(burger -> burger.getName().equals(menuName))
-                                .forEach(burger -> Order.cartList.add(burger)); // menuName 과 일치하는 정보들 cartList에 추가
+                productsList.stream().filter(product -> product.getName().equals(menuName))
+                                .forEach(product -> Order.cartList.add(product)); // menuName 과 일치하는 정보들 cartList에 추가
                 System.out.println(menuName + " 가 장바구니에 추가되었습니다");
                 break;
             case 2:
@@ -127,11 +100,13 @@ public class Menu {
     }
 
     public void selectOrderOrMenu() { // 장바구니 리스트 본 후 주문할지, 메뉴판으로 돌아갈지 선택
+        WaitingThread waitingThread = new WaitingThread();
         int selectedNumber = sc.nextInt();
         switch(selectedNumber) {
             case 1:
-                // sleep(3000); // 스레드 생성해야할 듯
-                PrintMenu.completeOrder();
+                PrintMenu.printCompleteOrder();
+                waitingThread.run(); // 3초 기다리기
+                Order.cartList.clear();
                 break;
             case 2:
                 break;
@@ -150,3 +125,11 @@ public class Menu {
         }
     }
 }
+
+
+
+
+
+
+
+
