@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 public class PrintMenu {
     static int waitingNumber = 1; // 대기번호
+    static double doublePrice = 2.3; // 버거 double일 경우 2300원 추가
 
     public static void printCommon() { // 메뉴 출력시 공통적으로 출력되는 부분
         System.out.println("\"MOM'S TOUCH BURGER 에 오신걸 환영합니다.\"");
@@ -26,18 +27,42 @@ public class PrintMenu {
                 + " | W " + menuList.getPrice() + " | " + menuList.getExplanation()));
         System.out.println();
     }
-
-    public static void printCartCheck(int menuNumber, List<Products> productsList) { // 장바구니에 추가할지 물어보는 질문 출력
+    
+    public static void printOptionCheck(int menuNumber, List<Products> productsList) { // 옵션에 대한 질문 출력
         Menu menu = new Menu();
-        Stream<Products> inputProduct = productsList.stream() // 사용자가 입력한 번호와 일치하면
-                .filter(product -> product.getNumber() == menuNumber);
-        inputProduct.forEach(product -> {
+
+        productsList.stream().filter(product -> product.getNumber() == menuNumber)
+        .forEach(product -> System.out.println("\"" + String.format("%-10s | W", product.getName())
+                        + product.getPrice() + " | " + product.getExplanation() + "\""));
+
+        System.out.println("위 메뉴의 어떤 옵션으로 추가하시겠습니까?");
+        productsList.stream().filter(product -> product.getNumber() == menuNumber)
+                .forEach(product -> {System.out.println("1. Single(W " + product.getPrice() +
+                    ")\t\t 2. Double(W " + product.getPrice() + doublePrice + ")\n");
+                    int selectedOptionNumber = menu.selectOption(product);
+                    printCartCheck(menuNumber, selectedOptionNumber, productsList);
+        });
+    }
+
+    public static void printCartCheck(int menuNumber, int selectedOptionNumber, List<Products> productsList) { // 장바구니에 추가할지 물어보는 질문 출력
+        Menu menu = new Menu();
+        // 사용자가 입력한 번호와 일치하면
+        productsList.stream().filter(product -> product.getNumber() == menuNumber)
+        .forEach(product -> {
+            double finalPrice = 0; // 장바구니에 들어가는 상품의 최종적인 가격
+            if(selectedOptionNumber == 1)
+                finalPrice = product.getPrice();
+            else if(selectedOptionNumber == 2)
+                finalPrice = product.getPrice()+doublePrice;
+
             System.out.println("\"" + product.getName()
-                    + " | W " + product.getPrice() + " | " + product.getExplanation() + "\"");
+                    + " | W " + finalPrice + " | " + product.getExplanation() + "\"");
 
             System.out.println("위 메뉴를 장바구니에 추가하시겠습니까?");
             System.out.println("1. 확인        2. 취소");
 
+            if(selectedOptionNumber == 2)
+                product.setPrice(finalPrice);
             menu.selectAddCart(product.getName(), productsList);
         });
     }
@@ -48,7 +73,7 @@ public class PrintMenu {
 
         System.out.println("[ Orders ]");
         Order.cartList.stream().forEach(list ->  System.out.println(list.getName()
-                + " | W " + list.getPrice() + " | " + list.getExplanation()));
+                + " | W " + list.getPrice() + " | " + list.getCount() + " | " + list.getExplanation()));
 
         System.out.println("\n[ Total ]");
         double total = Order.cartList.stream().mapToDouble(list -> list.getPrice()).sum();

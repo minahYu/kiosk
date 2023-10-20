@@ -2,6 +2,7 @@ package kiosk;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Menu {
     int number;
@@ -69,11 +70,24 @@ public class Menu {
         boolean containInputNumber = productsList.contains(foodNumber); // 입력 받은 값이 productsList에 있는지
 
         if(!containInputNumber) {
-            PrintMenu.printCartCheck(foodNumber, productsList);
+            //PrintMenu.printCartCheck(foodNumber, productsList);
+            PrintMenu.printOptionCheck(foodNumber, productsList);
             System.out.println();
         } else {
             System.out.println("메뉴에 해당하는 숫자를 입력해주세요.\n");
         }
+    }
+
+    public int selectOption(Products productStream) {
+        int selectedNumber = sc.nextInt();
+        /*double changePrice = 0; // 수정된 가격 저장할 변수
+
+        if(selectedNumber == 2) { // 옵션 2번 선택시 가격 수정
+            changePrice = productStream.getPrice() + PrintMenu.doublePrice;
+            //productStream.setPrice(productStream.getPrice() + PrintMenu.doublePrice);
+        }*/
+
+        return selectedNumber;
     }
 
     public void selectAddCart(String menuName, List<Products> productsList) { // 장바구니에 담을지 선택
@@ -82,7 +96,12 @@ public class Menu {
             case 1:
                 productsList.stream().filter(product -> product.getName().equals(menuName))
                                 .forEach(product -> { // menuName 과 일치하는 정보들 cartList와 totalSalesList에 추가
-                                    Order.cartList.add(product);
+                                    if(Order.cartList.contains(product)) {
+                                        product.setCount(product.getCount()+1);
+                                    } else {
+                                        Order.cartList.add(product);
+                                        product.setCount(product.getCount() + 1);
+                                    }
                                     Order.totalSalesList.add(product);
                                 });
                 System.out.println(menuName + " 가 장바구니에 추가되었습니다");
