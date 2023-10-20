@@ -5,8 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Order {
+    
     static List<Products> cartList = new ArrayList<>(); // 장바구니 목록
-    static List<Products> totalSales = new ArrayList<>(); // 총 판매 목록
+    static List<Products> totalSalesList = new ArrayList<>(); // 총 판매 목록
 
     static List<Menu> mainMenuList = Arrays.asList( // 메인 메뉴
             new Menu(1, "Mom's Touch", "Burgers", "넓적다리살과 닭가슴살로 만든 치킨 버거"),

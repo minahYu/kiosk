@@ -1,11 +1,11 @@
 package kiosk;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class PrintMenu {
     static int waitingNumber = 1; // 대기번호
+
     public static void printCommon() { // 메뉴 출력시 공통적으로 출력되는 부분
         System.out.println("\"MOM'S TOUCH BURGER 에 오신걸 환영합니다.\"");
         System.out.println("아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\n");
@@ -13,8 +13,8 @@ public class PrintMenu {
     public static void printCategoryMenu(String menuName) { // 카테고리 메뉴 선택
         System.out.println("[ " + menuName.toUpperCase() + " MENU ]");
         Order.mainMenuList.stream().filter(mainMenu -> mainMenu.getCategory().equals(menuName))
-                .forEach(mainMenu -> System.out.println(mainMenu.getNumber() + ". "
-                        + mainMenu.getName() + " | " + mainMenu.getExplanation()));
+                .forEach(mainMenu -> System.out.println(String.format("%d. %-10s |\t %s",
+                                mainMenu.getNumber(), mainMenu.getName(), mainMenu.getExplanation())));
         System.out.println();
     }
 
@@ -32,8 +32,8 @@ public class PrintMenu {
         Stream<Products> inputProduct = productsList.stream() // 사용자가 입력한 번호와 일치하면
                 .filter(product -> product.getNumber() == menuNumber);
         inputProduct.forEach(product -> {
-            System.out.println("\"" + product.getName() // 해당 부분 출력
-                    + " | W " + product.getPrice() + " | " + product.getExplanation());
+            System.out.println("\"" + product.getName()
+                    + " | W " + product.getPrice() + " | " + product.getExplanation() + "\"");
 
             System.out.println("위 메뉴를 장바구니에 추가하시겠습니까?");
             System.out.println("1. 확인        2. 취소");
@@ -58,13 +58,23 @@ public class PrintMenu {
         menu.selectOrderOrMenu();
     }
 
-    public static void printCompleteOrder() { // 주문완료 화면
-        int timeCount = 3;
+    public static boolean printCompleteOrder() { // 주문완료 화면
+        boolean cartEmpty = false; // 장바구니가 비어있으면 true, 아니면 false
 
-        System.out.println("주문이 완료되었습니다!\n");
-        System.out.println("대기번호는 [ " + waitingNumber + " ] 번 입니다.");
-        waitingNumber++; // 다음 대기번호는 +1
-        System.out.println("(" + timeCount + "초후 메뉴판으로 돌아갑니다.)\n");
+        if(Order.cartList.size() == 0) { // 장바구니에 담긴 게 없을 때
+            cartEmpty = true;
+            System.out.println("장바구니에 담긴 상품이 없습니다.\n" +
+                    "구매 원하는 상품을 골라주세요.\n");
+        } else { // 장바구니 내역이 있을 때
+            int timeCount = 3;
+
+            System.out.println("주문이 완료되었습니다!\n");
+            System.out.println("대기번호는 [ " + waitingNumber + " ] 번 입니다.");
+            waitingNumber++; // 다음 대기번호는 +1
+            System.out.println("(" + timeCount + "초후 메뉴판으로 돌아갑니다.)\n");
+        }
+
+        return cartEmpty;
     }
 
     public static void printOrderCancel() { // 주문 취소 화면
@@ -72,6 +82,23 @@ public class PrintMenu {
         System.out.println("진행하던 주문을 취소하시겠습니까?\n");
         System.out.println("1. 확인 \t 2.취소");
         menu.selectOrderCancel();
+    }
+
+    public void printTotalSalesList() { // 총 판매상품 목록 현황 화면
+        Double totalSalesAmount = Order.totalSalesList.stream()
+                .mapToDouble(totalAmount -> totalAmount.getPrice()).sum(); // 총 판매된 금액 계산
+
+        System.out.println("[ 총 판매금액 현황 ]");
+        System.out.println("현재까지 총 판매된 금액은 [ W " + totalSalesAmount + " ] 입니다.\n");
+
+        System.out.println("[ 총 판매상품 목록 현황 ]");
+        System.out.println("현재까지 총 판매된 상품 목록은 아래와 같습니다.");
+        Order.totalSalesList.stream()
+                .forEach(totalSale -> System.out.println(String.format("- %-10s | ", totalSale.getName())
+                        + "W " + totalSale.getPrice()));
+        System.out.println();
+
+        System.out.println("1. 돌아가기");
     }
 }
 

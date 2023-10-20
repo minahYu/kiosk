@@ -1,7 +1,5 @@
 package kiosk;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,50 +22,37 @@ public class Menu {
     }
 
     // getter
-    public int getNumber() {
-        return number;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getExplanation() {
-        return explanation;
-    }
+    public int getNumber() { return number; }
+    public String getCategory() { return category; }
+    public String getName() { return name; }
+    public String getExplanation() { return explanation; }
 
     // setter
-    public void setName() {
-        this.name = name;
-    }
-
-    public void setExplanation() {
-        this.explanation = explanation;
-    }
+    public void setName() { this.name = name; }
+    public void setExplanation() { this.explanation = explanation; }
 
     public void selectMainMenu() { // 메인메뉴 선택
         int mainMenuNumber = sc.nextInt();
         PrintMenu printMenu = new PrintMenu();
 
         switch (mainMenuNumber) {
+            case 0:
+                printMenu.printTotalSalesList();
+                break;
             case 1:
-                PrintMenu.printSelectedFoodMenu(Order.burgerList);
+                printMenu.printSelectedFoodMenu(Order.burgerList);
                 selectProductMenu(Order.burgerList);
                 break;
             case 2:
-                PrintMenu.printSelectedFoodMenu(Order.chickenList);
+                printMenu.printSelectedFoodMenu(Order.chickenList);
                 selectProductMenu(Order.chickenList);
                 break;
             case 3:
-                PrintMenu.printSelectedFoodMenu(Order.drinkList);
+                printMenu.printSelectedFoodMenu(Order.drinkList);
                 selectProductMenu(Order.drinkList);
                 break;
             case 4:
-                PrintMenu.printSelectedFoodMenu(Order.sideList);
+                printMenu.printSelectedFoodMenu(Order.sideList);
                 selectProductMenu(Order.sideList);
                 break;
             case 5: // 장바구니 리스트 화면
@@ -81,9 +66,14 @@ public class Menu {
 
     public void selectProductMenu(List<Products> productsList) { // 메뉴 선택 (음식)
         int foodNumber = sc.nextInt(); // 입력받기
+        boolean containInputNumber = productsList.contains(foodNumber); // 입력 받은 값이 productsList에 있는지
 
-        PrintMenu.printCartCheck(foodNumber, productsList);
-        System.out.println();
+        if(!containInputNumber) {
+            PrintMenu.printCartCheck(foodNumber, productsList);
+            System.out.println();
+        } else {
+            System.out.println("메뉴에 해당하는 숫자를 입력해주세요.\n");
+        }
     }
 
     public void selectAddCart(String menuName, List<Products> productsList) { // 장바구니에 담을지 선택
@@ -91,7 +81,10 @@ public class Menu {
         switch(addCartNumber) {
             case 1:
                 productsList.stream().filter(product -> product.getName().equals(menuName))
-                                .forEach(product -> Order.cartList.add(product)); // menuName 과 일치하는 정보들 cartList에 추가
+                                .forEach(product -> { // menuName 과 일치하는 정보들 cartList와 totalSalesList에 추가
+                                    Order.cartList.add(product);
+                                    Order.totalSalesList.add(product);
+                                });
                 System.out.println(menuName + " 가 장바구니에 추가되었습니다");
                 break;
             case 2:
@@ -104,9 +97,10 @@ public class Menu {
         int selectedNumber = sc.nextInt();
         switch(selectedNumber) {
             case 1:
-                PrintMenu.printCompleteOrder();
-                waitingThread.run(); // 3초 기다리기
-                Order.cartList.clear();
+                if(!PrintMenu.printCompleteOrder()) { // 장바구니가 채워져 있으면
+                    waitingThread.run(); // 3초 기다리기
+                    Order.cartList.clear();
+                }
                 break;
             case 2:
                 break;
