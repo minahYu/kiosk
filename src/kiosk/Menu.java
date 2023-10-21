@@ -69,6 +69,17 @@ public class Menu {
         int foodNumber = sc.nextInt(); // 입력받기
         boolean containInputNumber = productsList.contains(foodNumber); // 입력 받은 값이 productsList에 있는지
 
+        switch(foodNumber) {
+            case 1:
+            case 2:
+                PrintMenu.surcharge = 2.3;
+                break;
+            case 3:
+            case 4:
+                PrintMenu.surcharge = 0.5;
+                break;
+        }
+
         if(!containInputNumber) {
             //PrintMenu.printCartCheck(foodNumber, productsList);
             PrintMenu.printOptionCheck(foodNumber, productsList);
@@ -90,20 +101,29 @@ public class Menu {
         return selectedNumber;
     }
 
-    public void selectAddCart(String menuName, List<Products> productsList) { // 장바구니에 담을지 선택
+    public void selectAddCart(String menuName, double price, Products product) { // 장바구니에 담을지 선택
         int addCartNumber = sc.nextInt();
         switch(addCartNumber) {
             case 1:
-                productsList.stream().filter(product -> product.getName().equals(menuName))
+                /*productsList.stream().filter(product -> product.getName().equals(menuName))
                                 .forEach(product -> { // menuName 과 일치하는 정보들 cartList와 totalSalesList에 추가
                                     if(Order.cartList.contains(product)) {
-                                        product.setCount(product.getCount()+1);
+                                        product.setCount(product.getCount() + 1);
+
                                     } else {
                                         Order.cartList.add(product);
                                         product.setCount(product.getCount() + 1);
                                     }
                                     Order.totalSalesList.add(product);
-                                });
+                                });*/
+                if(Order.cartList.contains(product)) {
+                    product.setCount(product.getCount() + 1);
+
+                } else {
+                    Order.cartList.add(product);
+                    product.setCount(product.getCount() + 1);
+                }
+                Order.totalSalesList.add(product);
                 System.out.println(menuName + " 가 장바구니에 추가되었습니다");
                 break;
             case 2:
