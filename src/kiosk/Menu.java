@@ -29,8 +29,8 @@ public class Menu {
     public String getExplanation() { return explanation; }
 
     // setter
-    public void setName() { this.name = name; }
-    public void setExplanation() { this.explanation = explanation; }
+    public void setName(String name) { this.name = name; }
+    public void setExplanation(String explanation) { this.explanation = explanation; }
 
     public void selectMainMenu() { // 메인메뉴 선택
         int mainMenuNumber = sc.nextInt();
@@ -43,18 +43,22 @@ public class Menu {
             case 1:
                 printMenu.printSelectedFoodMenu(Order.burgerList);
                 selectProductMenu(Order.burgerList);
+                PrintMenu.surcharge = 2.3;
                 break;
             case 2:
                 printMenu.printSelectedFoodMenu(Order.chickenList);
                 selectProductMenu(Order.chickenList);
+                PrintMenu.surcharge = 2.3;
                 break;
             case 3:
                 printMenu.printSelectedFoodMenu(Order.drinkList);
                 selectProductMenu(Order.drinkList);
+                PrintMenu.surcharge = 0.5;
                 break;
             case 4:
                 printMenu.printSelectedFoodMenu(Order.sideList);
                 selectProductMenu(Order.sideList);
+                PrintMenu.surcharge = 0.5;
                 break;
             case 5: // 장바구니 리스트 화면
                 printMenu.printCartList();
@@ -62,69 +66,49 @@ public class Menu {
             case 6: // 주문 취소화면
                 printMenu.printOrderCancel();
                 break;
+            default:
+                System.out.println("잘못된 입력입니다.\n");
         }
     }
 
     public void selectProductMenu(List<Products> productsList) { // 메뉴 선택 (음식)
         int foodNumber = sc.nextInt(); // 입력받기
-        boolean containInputNumber = productsList.contains(foodNumber); // 입력 받은 값이 productsList에 있는지
 
-        switch(foodNumber) {
-            case 1:
-            case 2:
-                PrintMenu.surcharge = 2.3;
-                break;
-            case 3:
-            case 4:
-                PrintMenu.surcharge = 0.5;
-                break;
-        }
-
-        if(!containInputNumber) {
-            //PrintMenu.printCartCheck(foodNumber, productsList);
-            PrintMenu.printOptionCheck(foodNumber, productsList);
-            System.out.println();
-        } else {
-            System.out.println("메뉴에 해당하는 숫자를 입력해주세요.\n");
-        }
+        PrintMenu.printOptionCheck(foodNumber, productsList);
     }
 
     public int selectOption(Products productStream) {
         int selectedNumber = sc.nextInt();
-        /*double changePrice = 0; // 수정된 가격 저장할 변수
-
-        if(selectedNumber == 2) { // 옵션 2번 선택시 가격 수정
-            changePrice = productStream.getPrice() + PrintMenu.doublePrice;
-            //productStream.setPrice(productStream.getPrice() + PrintMenu.doublePrice);
-        }*/
 
         return selectedNumber;
     }
 
-    public void selectAddCart(String menuName, double price, Products product) { // 장바구니에 담을지 선택
+    public void selectAddCart(String menuName, int selectedOptionNumber, double finalPrice, Products product) { // 장바구니에 담을지 선택
         int addCartNumber = sc.nextInt();
+        String option = selectedOptionNumber==1 ? "S" : "D";
+
+
         switch(addCartNumber) {
             case 1:
-                /*productsList.stream().filter(product -> product.getName().equals(menuName))
-                                .forEach(product -> { // menuName 과 일치하는 정보들 cartList와 totalSalesList에 추가
-                                    if(Order.cartList.contains(product)) {
-                                        product.setCount(product.getCount() + 1);
+                boolean exist = false;
+                Products myProduct = new Products(product.getNumber(), product.getCategory(),
+                        finalPrice, option, product.getName(), product.getExplanation());
 
-                                    } else {
-                                        Order.cartList.add(product);
-                                        product.setCount(product.getCount() + 1);
-                                    }
-                                    Order.totalSalesList.add(product);
-                                });*/
-                if(Order.cartList.contains(product)) {
-                    product.setCount(product.getCount() + 1);
-
-                } else {
-                    Order.cartList.add(product);
-                    product.setCount(product.getCount() + 1);
+                for(Products inCartProduct : Order.cartList) {
+                    if(inCartProduct.getName().equals(myProduct.getName())
+                            && inCartProduct.getOption().equals(myProduct.getOption())) {
+                        inCartProduct.setCount(inCartProduct.getCount() + 1);
+                        exist = true;
+                        break;
+                    }
                 }
-                Order.totalSalesList.add(product);
-                System.out.println(menuName + " 가 장바구니에 추가되었습니다");
+
+                if(exist == false) {
+                    myProduct.setCount(myProduct.getCount() + 1);
+                    Order.cartList.add(myProduct);
+                }
+                Order.totalSalesList.add(myProduct);
+                System.out.println(menuName + " 가 장바구니에 추가되었습니다\n");
                 break;
             case 2:
                 break;

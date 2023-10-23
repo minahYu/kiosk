@@ -32,14 +32,6 @@ public class PrintMenu {
         Menu menu = new Menu();
         String menuName;
 
-        /*Products selectedProduct = (Products) productsList.stream()
-                .filter(product -> product.getNumber() == menuNumber)
-        .map(product -> {
-            System.out.println("\"" + String.format("%-10s | W", product.getName())
-                    + product.getPrice() + " | " + product.getExplanation() + "\"");
-            return product;
-        });*/
-
         List<Products> selectedProduct = productsList.stream().filter(product -> product.getNumber() == menuNumber).toList();
         System.out.println("\"" + String.format("%-10s | W", selectedProduct.get(0).getName())
                 + selectedProduct.get(0).getPrice() + " | " + selectedProduct.get(0).getExplanation() + "\"");
@@ -70,26 +62,7 @@ public class PrintMenu {
         System.out.println("위 메뉴를 장바구니에 추가하시겠습니까?");
         System.out.println("1. 확인        2. 취소");
 
-        menu.selectAddCart(product.getName(), finalPrice, product);
-        // 사용자가 입력한 번호와 일치하면'
-        /*productsList.stream().filter(product -> product.getNumber() == menuNumber)
-        .forEach(product -> {
-            double finalPrice = 0; // 장바구니에 들어가는 상품의 최종적인 가격
-            if(selectedOptionNumber == 1)
-                finalPrice = product.getPrice();
-            else if(selectedOptionNumber == 2)
-                finalPrice = Math.floor((product.getPrice() + surcharge) * 10) / 10.0;
-
-            System.out.println("\"" + product.getName()
-                    + " | W " + finalPrice + " | " + product.getExplanation() + "\"");
-
-            System.out.println("위 메뉴를 장바구니에 추가하시겠습니까?");
-            System.out.println("1. 확인        2. 취소");
-
-            *//*if(selectedOptionNumber == 2)
-                product.setPrice(finalPrice);*//*
-            menu.selectAddCart(product.getName(), finalPrice, productsList);
-        });*/
+        menu.selectAddCart(product.getName(), selectedOptionNumber, finalPrice, product);
     }
 
     public void printCartList() { // 장바구니 목록 출력
@@ -98,11 +71,12 @@ public class PrintMenu {
 
         System.out.println("[ Orders ]");
         Order.cartList.stream().forEach(list ->  System.out.println(list.getName()
-                + " | W " + list.getPrice() + " | " + list.getCount() + " | " + list.getExplanation()));
+                + " | " + list.getOption() + " | W " + list.getPrice() + " | "
+                + list.getCount() + "개 | " + list.getExplanation()));
 
         System.out.println("\n[ Total ]");
         double total = (Order.cartList.stream().mapToDouble(list -> list.getPrice()*list.getCount()).sum());
-        System.out.println("W " + total + "\n");
+        System.out.println("W " + Math.floor(total*10)/10 + "\n");
 
         System.out.println("1. 주문 \t 2.메뉴판");
         menu.selectOrderOrMenu();
@@ -139,7 +113,7 @@ public class PrintMenu {
                 .mapToDouble(totalAmount -> totalAmount.getPrice()).sum(); // 총 판매된 금액 계산
 
         System.out.println("[ 총 판매금액 현황 ]");
-        System.out.println("현재까지 총 판매된 금액은 [ W " + totalSalesAmount + " ] 입니다.\n");
+        System.out.println("현재까지 총 판매된 금액은 [ W " + Math.floor(totalSalesAmount*10)/10 + " ] 입니다.\n");
 
         System.out.println("[ 총 판매상품 목록 현황 ]");
         System.out.println("현재까지 총 판매된 상품 목록은 아래와 같습니다.");
