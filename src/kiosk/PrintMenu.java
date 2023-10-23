@@ -17,7 +17,7 @@ public class PrintMenu {
     public static void printSelectedFoodMenu(List<Products> productsList) {
         printCommon();
         System.out.println("[ " + productsList.get(0).getCategory().toUpperCase() + " MENU ]");
-        productsList.stream().forEach(menuList ->
+        productsList.forEach(menuList ->
                 System.out.println(String.format("%d. %-" + gap + "s | W ", menuList.getNumber(), menuList.getName())
                         + menuList.getPrice() + " | " + menuList.getExplanation()));
         System.out.println();
@@ -27,8 +27,8 @@ public class PrintMenu {
     public static void printCategoryMenu(String menuName) {
         System.out.println("[ " + menuName.toUpperCase() + " MENU ]");
         Order.mainMenuList.stream().filter(mainMenu -> mainMenu.getCategory().equals(menuName))
-                .forEach(mainMenu -> System.out.println(String.format("%d. %-8s |\t %s",
-                        mainMenu.getNumber(), mainMenu.getName(), mainMenu.getExplanation())));
+                .forEach(mainMenu -> System.out.printf("%d. %-8s |\t %s",
+                        mainMenu.getNumber(), mainMenu.getName(), mainMenu.getExplanation()));
         System.out.println();
     }
 
@@ -57,10 +57,7 @@ public class PrintMenu {
         Menu menu = new Menu();
 
         double finalPrice = 0; // 장바구니에 들어가는 상품의 최종적인 가격
-        while(selectedNumber != 1 && selectedNumber !=2) {
-            menu.wrongInput();
-            selectedNumber = menu.getInput();
-        }
+        menu.twoOptionsRange(selectedNumber);
 
         switch (selectedNumber) {
             case 1:
@@ -85,7 +82,7 @@ public class PrintMenu {
         System.out.println("아래와 같이 주문 하시겠습니까?\n");
 
         System.out.println("[ Orders ]");
-        Order.cartList.stream().forEach(list -> System.out.println(String.format("%-21s", list.getName())
+        Order.cartList.forEach(list -> System.out.println(String.format("%-21s", list.getName())
                 + " | " + list.getOption() + " | W " + list.getPrice() + " | "
                 + list.getCount() + "개 | " + list.getExplanation()));
 
@@ -127,7 +124,7 @@ public class PrintMenu {
     // 총 판매상품 목록 현황 화면을 출력하는 메서드
     public void printTotalSalesList() {
         Menu menu = new Menu();
-        Double totalSalesAmount = Order.totalSalesList.stream()
+        double totalSalesAmount = Order.totalSalesList.stream()
                 .mapToDouble(totalAmount -> totalAmount.getPrice()).sum(); // 총 판매된 금액 계산
 
         System.out.println("[ 총 판매금액 현황 ]");
@@ -135,9 +132,8 @@ public class PrintMenu {
 
         System.out.println("[ 총 판매상품 목록 현황 ]");
         System.out.println("현재까지 총 판매된 상품 목록은 아래와 같습니다.");
-        Order.totalSalesList.stream()
-                .forEach(totalSale -> System.out.println(String.format("- %-10s | ", totalSale.getName())
-                        + "W " + totalSale.getPrice()));
+        Order.totalSalesList.forEach(totalSale ->
+                System.out.println(String.format("- %-10s | ", totalSale.getName()) + "W " + totalSale.getPrice()));
         System.out.println();
 
         System.out.println("1. 돌아가기");

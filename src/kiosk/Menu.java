@@ -9,7 +9,7 @@ public class Menu {
     String name = "";
     String explanation;
 
-    private Scanner sc = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
 
     // 기본생성자
     public Menu() {}
@@ -38,6 +38,14 @@ public class Menu {
     // 입력받은 값이 정해진 범위내에 없을 때 메세지를 출력하는 메서드
     static public void wrongInput() {
         System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
+    }
+
+    // 선택지가 두개일 때(1 or 2) 범위가 벗어나게 되면 실행되는 메서드
+    public void twoOptionsRange(int selectedNumber) {
+        while(selectedNumber != 1 && selectedNumber !=2) {
+            wrongInput();
+            selectedNumber = getInput();
+        }
     }
 
     // 카테고리를 선택하는 메서드
@@ -93,15 +101,14 @@ public class Menu {
 
     // 음식 메뉴 선택하는 메서드
     public void selectProductMenu(List<Products> productsList) {
-        int foodNumber = getInput(); // 입력받기
+        int selectedNumber = getInput(); // 입력받기
         int listLastNumber = productsList.get(productsList.size()-1).getNumber();
 
-        while(foodNumber < 1 || foodNumber > listLastNumber) {
-                wrongInput();
-                foodNumber = getInput();
+        while(selectedNumber < 1 || selectedNumber > listLastNumber) {
+            wrongInput();
+            selectedNumber = getInput();
         }
-        if(foodNumber >= 1 && foodNumber <= listLastNumber)
-            PrintMenu.printOptionCheck(foodNumber, productsList);
+        PrintMenu.printOptionCheck(selectedNumber, productsList);
     }
 
     // 장바구니에 담을지 선택하는 메서드
@@ -109,11 +116,7 @@ public class Menu {
         int selectedNumber = getInput();
         String option = selectedOptionNumber == 1 ? "S" : "D";
 
-        while(selectedNumber != 1 && selectedNumber !=2) {
-            wrongInput();
-            selectedNumber = getInput();
-        }
-
+        twoOptionsRange(selectedNumber);
         switch (selectedNumber) {
             case 1: // 추가
                 boolean exist = false;
@@ -129,7 +132,7 @@ public class Menu {
                     }
                 }
 
-                if (exist == false) {
+                if (!exist) {
                     myProduct.setCount(myProduct.getCount() + 1);
                     Order.cartList.add(myProduct);
                 }
@@ -146,10 +149,7 @@ public class Menu {
         WaitingThread waitingThread = new WaitingThread();
         int selectedNumber = getInput();
 
-        while(selectedNumber != 1 && selectedNumber != 2) {
-            wrongInput();
-            selectedNumber = getInput();
-        }
+        twoOptionsRange(selectedNumber);
 
         switch (selectedNumber) {
             case 1:
@@ -166,10 +166,8 @@ public class Menu {
     // 주문을 취소할지 계속할지 선택하는 메서드
     public void selectOrderCancel() {
         int selectedNumber = getInput();
-        while(selectedNumber != 1 && selectedNumber != 2) {
-            wrongInput();
-            selectedNumber = getInput();
-        }
+        twoOptionsRange(selectedNumber);
+
         switch (selectedNumber) {
             case 1:
                 Order.cartList.clear();
@@ -181,20 +179,17 @@ public class Menu {
     }
 
     // 총 판매 상품 목록 현황 화면에서 돌아가기 버튼을 눌러야 돌아가게끔 하는 메서드
-    public boolean back() {
+    public void back() {
         int input = getInput();
         boolean check = false;
 
         while(!check) {
-            switch (input) {
-                case 1:
-                    check = true;
-                    break;
-                default:
-                    wrongInput();
-                    input = getInput();
+            if (input == 1) {
+                check = true;
+            } else {
+                wrongInput();
+                input = getInput();
             }
         }
-        return check;
     }
 }
