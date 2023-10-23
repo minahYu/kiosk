@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Order {
-    
+
     static List<Products> cartList = new ArrayList<>(); // 장바구니 목록
     static List<Products> totalSalesList = new ArrayList<>(); // 총 판매 목록
 
     static List<Menu> mainMenuList = Arrays.asList( // 메인 메뉴
             new Menu(1, "Mom's Touch", "Burgers", "넓적다리살, 닭가슴살로 만든 치킨 버거"),
-            new Menu(2,"Mom's Touch", "Chickens", "치킨"),
+            new Menu(2, "Mom's Touch", "Chickens", "치킨"),
             new Menu(3, "Mom's Touch", "Drinks", "시원한 음료"),
             new Menu(4, "Mom's Touch", "Side", "사이드 메뉴"),
             new Menu(5, "Order", "Order", "장바구니를 확인 후 주문합니다."),

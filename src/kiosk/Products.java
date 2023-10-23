@@ -1,12 +1,13 @@
 package kiosk;
 
-public class Products extends Menu{
+public class Products extends Menu {
     private double price;
     private int count;
     private String option;
 
     // 생성자
-    public Products() {};
+    public Products() {}
+
     public Products(int number, String category, double price, String name, String explanation) {
         super.number = number;
         super.category = category;
@@ -17,6 +18,7 @@ public class Products extends Menu{
         super.explanation = explanation;
     }
 
+    // 장바구니에 추가시 사용하는 생성자
     public Products(int number, String category, double price, String option, String name, String explanation) {
         super.number = number;
         super.category = category;
@@ -37,4 +39,3 @@ public class Products extends Menu{
     public void setCount(int count) { this.count = count; }
     public void setOption(String option) { this.option = option; }
 }
-
